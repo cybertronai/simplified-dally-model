@@ -25,7 +25,7 @@ processor, designed to price a single function call.
 ## Function semantics
 
 - **At the start of a call**, the location of every input byte is
-  specified by the caller. Inputs are placed on the grid for free
+  specified by the caller, in order of Python signature and data-layout.
 - **At the end of a call**, the location of every output byte is
   specified by the caller, these incur standard read cost.
 

@@ -57,3 +57,9 @@ Put `a→1, b→2, c→3, d→4,e→5`
 
 **Total cost:**
 `(1+2) + (2+2) + (1+2) + (1+3) + 1 = 15`.
+
+## Instruction sets
+
+| Version                                | Ops                          | Covers                                                                     |
+|----------------------------------------|------------------------------|----------------------------------------------------------------------------|
+| [`v0`](instruction-sets/v0/README.md)  | `add`, `sub`, `mul`, `copy`  | Straight-line dense linear algebra (matmul, conv, stencil, FFT, Strassen). |

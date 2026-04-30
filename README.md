@@ -53,6 +53,7 @@ Put `a→1, b→2, c→3, d→4,e→5`
 | 2    | `t2 = c * d`, write `t2 → 2`            | `c@3`, `d@4`      | 2+2  |
 | 3    | `s  = t1 + t2`, write `s  → 1`          | `t1@1`, `t2@2`    | 1+2  |
 | 4    | `r  = s + e`, write `r  → 1`            | `s@1`, `e@5`      | 1+3  |
+| exit | return value read at output address `1` | `r@1`             | 1    |
 
 
 **Total cost:**

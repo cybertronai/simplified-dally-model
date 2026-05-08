@@ -9,3 +9,4 @@ in its own directory; later versions strictly extend earlier ones.
 | [`v0`](v0/) | `add`, `sub`, `mul`, `copy` | Straight-line dense linear algebra (matmul, convolution, stencil, FFT, basic Strassen). |
 | [`v1`](v1/) | v0 + `and`, `or`, `not`, `xor` | Adds bitwise logic kernels (popcount, parity, bit-reverse, masking, XOR-based hashing). |
 | [`v2`](v2/) | v1 + `set`                | Adds integer-immediate store; constants no longer require a caller-supplied cell. |
+| [`v3`](v3/) | v2 + `div`, `cmp`, `select`, `abs` | Adds the primitives needed for Gaussian elimination with partial pivoting (LU). |

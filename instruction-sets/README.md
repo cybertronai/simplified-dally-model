@@ -2,7 +2,7 @@
 
 Versioned instruction-set specs for IR programs run under the
 simplified Dally cost model. Each version is a self-contained spec
-in its own directory; later versions strictly extend earlier ones.
+in its own directory
 
 | Version | Ops                       | Covers                                                   |
 |---------|---------------------------|----------------------------------------------------------|

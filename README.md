@@ -8,6 +8,11 @@ grid.
 This is a simplified implementation of that model for a single
 processor, designed to price a single function call.
 
+**[▶ Live animation](https://cybertronai.github.io/simplified-dally-model/)** — a naive
+4×4 matmul executed one priced access per clock, with the bill accumulating as it runs.
+
+![Naive 4x4 matmul priced under the model](naive_4x4_matmul.gif)
+
 ![Upper-half-plane Manhattan layout](simplified_explicit_communication_model.svg)
 
 - Processor is at the origin, memory is arranged as a 2D grid in the

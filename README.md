@@ -21,6 +21,7 @@ processor, designed to price a single function call.
   distance from the core.
 
 ## Cost model (what is priced)
+Every write is followed by a read, every arithmetic instruction involves a read, hence sufficient to only consider reads.   
 
 - **Reads are priced.** The cost of a read is the Manhattan distance
   from the core to the cell being read.

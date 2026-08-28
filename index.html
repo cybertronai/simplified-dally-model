@@ -50,8 +50,9 @@
   button.btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; min-width: 92px; }
   button.btn.primary:hover { background: #a83809; color: #fff; }
   button.btn.on { background: var(--ink); border-color: var(--ink); color: #fff; }
-  .speeds { display: flex; gap: 4px; }
-  .speeds button { padding: 7px 10px; font-family: var(--mono); font-size: 13px; }
+  .speeds, .sizes { display: flex; gap: 4px; }
+  .speeds button, .sizes button { padding: 7px 10px; font-family: var(--mono); font-size: 13px; }
+  .sep { width: 1px; height: 22px; background: var(--line); margin: 0 4px; }
   .spacer { flex: 1 1 auto; }
 
   .scrub { display: flex; align-items: center; gap: 14px; padding: 12px 18px 4px; }
@@ -72,15 +73,15 @@
   .irline .dim { opacity: .6; }
 
   .panes { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-           gap: 10px; padding: 4px 18px 10px; align-items: start; }
+           gap: 10px; padding: 4px 18px 10px; align-items: center; }
   @media (max-width: 940px) { .panes { grid-template-columns: 1fr; } }
 
   .mats { display: flex; align-items: center; justify-content: center; gap: 7px; flex-wrap: wrap; padding-top: 6px; }
   .mat { display: flex; flex-direction: column; align-items: center; gap: 6px; }
   .mat .name { font-family: var(--mono); font-size: 12px; color: var(--ink-soft); letter-spacing: .06em; }
-  .grid4 { display: grid; grid-template-columns: repeat(4, 33px); grid-auto-rows: 28px; gap: 2.5px; }
+  .gridn { display: grid; gap: 2.5px; }
   .cellv { display: flex; align-items: center; justify-content: center;
-           font-family: var(--mono); font-size: 12.5px; border-radius: 6px;
+           font-family: var(--mono); border-radius: 6px;
            background: #f4f1ea; color: var(--ink-soft); transition: background .1s, color .1s;
            border: 1.5px solid transparent; }
   .cellv.band { background: #ece8de; }
@@ -128,14 +129,12 @@
   table.lay td { padding: 4px 18px 4px 0; border-bottom: 1px solid var(--line); }
   table.lay td:first-child { color: var(--ink-soft); }
 
-  /* ---------- algorithm tabs ---------- */
   .tabs { display: flex; gap: 6px; flex-wrap: wrap; margin: 18px 0 0; }
   .tab { font: 500 14px "Inter", sans-serif; color: var(--ink-soft); background: var(--card);
          border: 1px solid var(--line); border-radius: 9px 9px 0 0; border-bottom-color: transparent;
          padding: 8px 14px; cursor: pointer; }
   .tab:hover { color: var(--accent); }
-  .tab.on { color: var(--ink); font-weight: 600; background: var(--card);
-            box-shadow: inset 0 2px 0 var(--accent); }
+  .tab.on { color: var(--ink); font-weight: 600; box-shadow: inset 0 2px 0 var(--accent); }
   .panel { background: var(--card); border: 1px solid var(--line); border-radius: 0 14px 14px 14px;
            padding: 16px 18px 18px; margin-top: -1px; }
   .chartbar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
@@ -161,16 +160,10 @@
     Bill Dally (<a href="https://cacm.acm.org/opinion/on-the-model-of-computation-point/">On the Model of Computation</a>, CACM 2022)
     proposed pricing algorithms by their data movement. Memory is a 2D grid around the core;
     an access to address <span class="m">a</span> costs its Manhattan distance
-    <span class="m">⌈√a⌉</span>, while writes and arithmetic are free. Below, a naive 4×4
-    matmul runs one access per clock so the bill accumulates in the open.
+    <span class="m">⌈√a⌉</span>, while writes and arithmetic are free. Below, a naive matmul
+    runs one access per clock so the bill accumulates in the open — start with 2×2.
   </p>
-  <div class="facts">
-    <span class="fact">112 instructions</span>
-    <span class="fact">64 <b>mul</b> · 48 <b>add</b></span>
-    <span class="fact">240 cycles</span>
-    <span class="fact">cost <b>1,316</b></span>
-    <span class="fact">best known <b>800</b></span>
-  </div>
+  <div class="facts" id="facts"></div>
 </header>
 
 <figure class="stage">
@@ -178,6 +171,9 @@
     <button class="btn primary" id="play">▶ Play</button>
     <button class="btn" id="stepb">−1</button>
     <button class="btn" id="stepf">+1</button>
+    <div class="sep"></div>
+    <div class="sizes" id="sizes"></div>
+    <div class="sep"></div>
     <div class="speeds" id="speeds"></div>
     <button class="btn" id="heat">heat</button>
     <div class="spacer"></div>
@@ -193,18 +189,12 @@
   <div class="panes">
     <div class="pane">
       <div class="mats" id="mats"></div>
-      <div class="tmpchip"><span>tmp @49</span><span class="box" id="tmpbox">·</span></div>
+      <div class="tmpchip"><span id="tmplabel">tmp</span><span class="box" id="tmpbox">·</span></div>
       <div class="verdict" id="verdict">✓ C = A · B</div>
     </div>
     <div class="pane arena">
       <div id="arena"></div>
-      <div class="legend" id="legend">
-        <span><i style="background:var(--rA)"></i>A 1–16</span>
-        <span><i style="background:var(--rB)"></i>B 17–32</span>
-        <span><i style="background:var(--rC)"></i>C 33–48</span>
-        <span><i style="background:var(--rT)"></i>tmp 49</span>
-        <span>dashed = write (free)</span>
-      </div>
+      <div class="legend" id="legend"></div>
       <div class="legend" id="heatlegend" hidden></div>
     </div>
   </div>
@@ -224,29 +214,27 @@
 <p>
   The cell at linear index <span class="m">a</span> sits at Manhattan distance
   <span class="m">⌈√a⌉</span> from the core, so ring <span class="m">k</span> holds
-  <span class="m">2k−1</span> cells and the whole program fits in seven rings.
+  <span class="m">2k−1</span> cells. The arrays are placed contiguously, which leaves the
+  output furthest from the core.
 </p>
-<table class="lay">
-  <tr><td>A row-major</td><td>1 – 16</td><td>d = 1 – 4</td></tr>
-  <tr><td>B row-major</td><td>17 – 32</td><td>d = 5 – 6</td></tr>
-  <tr><td>C row-major</td><td>33 – 48</td><td>d = 6 – 7</td></tr>
-  <tr><td>tmp</td><td>49</td><td>d = 7</td></tr>
-</table>
+<table class="lay" id="laytable"></table>
 
 <h2>Where the energy goes</h2>
 <p>
-  Two thirds of the naive bill is scratch traffic. Every one of the 48 accumulate steps
+  Two thirds of the 4×4 bill is scratch traffic. Every one of the 48 accumulate steps
   reads <span class="m">C[i,j]</span> at distance 6–7 and <span class="m">tmp</span> at
   distance 7, so <span class="m">tmp</span> alone (336) costs more than every access to A
-  (200). The 800-cost record restructures the loop as outer products, keeping the
-  accumulator and the broadcast operand in the cheapest addresses.
+  (200). The same shape appears at 2×2, just smaller: 16 of its 84 units are
+  <span class="m">tmp</span>. The 800-cost 4×4 record restructures the loop as outer
+  products, keeping the accumulator and the broadcast operand in the cheapest addresses.
 </p>
 
 <footer>
   <p>
     The animated program is <span class="m">generate_baseline_4x4()</span> from the
-    <a href="https://github.com/cybertronai/sutro-problems/tree/main/matmul">matmul</a> problem set;
-    its 1,316 matches the reference scorer. Instruction set and cost model:
+    <a href="https://github.com/cybertronai/sutro-problems/tree/main/matmul">matmul</a> problem
+    set, and the same generator at n = 2; both reproduce the reference scorer (84 and 1,316).
+    Instruction set and cost model:
     <a href="https://github.com/cybertronai/simplified-dally-model">cybertronai/simplified-dally-model</a>.
     Layout math and simulator are plain JavaScript — view source.
   </p>
@@ -264,45 +252,57 @@ function pos(a) {                                     // upper-half spiral
   const x = (k % 2 === 1) ? -(k - 1) + idx : (k - 1) - idx;
   return { x, y: k - Math.abs(x), k };
 }
-
-/* ================= naive 4x4 program ================= */
-const N = 4;
-const A_at = (i, j) => 1 + i * N + j;
-const B_at = (i, j) => 1 + N * N + i * N + j;
-const C_at = (i, j) => 1 + 2 * N * N + i * N + j;
-const TMP = 3 * N * N + 1;
-const Av = (i, j) => i * N + j + 1;
-const Bv = (i, j) => i + 2 * j + 3;
-const region = (a) => a <= 16 ? "A" : a <= 32 ? "B" : a <= 48 ? "C" : "T";
 const RCOL = { A: "var(--rA)", B: "var(--rB)", C: "var(--rC)", T: "var(--rT)" };
 
-// One event = one clock cycle = one memory access. A two-operand instruction
-// therefore takes two cycles; the write lands on the second.
-const EV = [];
-function emit(op, dest, s1, s2, ctx) {
-  EV.push(Object.assign({ op, dest, s1, s2, addr: s1, slot: 0, write: false }, ctx));
-  EV.push(Object.assign({ op, dest, s1, s2, addr: s2, slot: 1, write: true }, ctx));
-}
-for (let i = 0; i < N; i++) for (let j = 0; j < N; j++) {
-  emit("mul", C_at(i, j), A_at(i, 0), B_at(0, j), { i, j, k: 0 });
-  for (let k = 1; k < N; k++) {
-    emit("mul", TMP, A_at(i, k), B_at(k, j), { i, j, k });
-    emit("add", C_at(i, j), C_at(i, j), TMP, { i, j, k });
+/* ================= program, parameterised by n ================= */
+let N, A_at, B_at, C_at, TMP, NCELLS, EV, NEV, EXPECT, CYC_PER_CELL, BAR_MAX, region;
+const Av = (i, j) => i * N + j + 1;                   // matmul._matmul_test data
+const Bv = (i, j) => i + 2 * j + 3;
+
+function buildProgram(n) {
+  N = n;
+  A_at = (i, j) => 1 + i * n + j;
+  B_at = (i, j) => 1 + n * n + i * n + j;
+  C_at = (i, j) => 1 + 2 * n * n + i * n + j;
+  TMP = 3 * n * n + 1;
+  NCELLS = TMP;
+  region = (a) => a <= n * n ? "A" : a <= 2 * n * n ? "B" : a <= 3 * n * n ? "C" : "T";
+  CYC_PER_CELL = 2 * (2 * n - 1);                     // cycles to finish one C[i,j]
+
+  // one event = one clock = one priced access; a binary op takes two cycles
+  EV = [];
+  const emit = (op, dest, s1, s2, ctx) => {
+    EV.push(Object.assign({ op, dest, s1, s2, addr: s1, slot: 0, write: false }, ctx));
+    EV.push(Object.assign({ op, dest, s1, s2, addr: s2, slot: 1, write: true }, ctx));
+  };
+  for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) {
+    emit("mul", C_at(i, j), A_at(i, 0), B_at(0, j), { i, j, k: 0 });
+    for (let k = 1; k < n; k++) {
+      emit("mul", TMP, A_at(i, k), B_at(k, j), { i, j, k });
+      emit("add", C_at(i, j), C_at(i, j), TMP, { i, j, k });
+    }
   }
+  for (let i = 0; i < n; i++) for (let j = 0; j < n; j++)
+    EV.push({ op: "exit", dest: null, s1: C_at(i, j), s2: null, addr: C_at(i, j), slot: 0, write: false, i, j });
+  NEV = EV.length;
+
+  EXPECT = [];
+  for (let i = 0; i < n; i++) {
+    const r = [];
+    for (let j = 0; j < n; j++) { let s = 0; for (let k = 0; k < n; k++) s += Av(i, k) * Bv(k, j); r.push(s); }
+    EXPECT.push(r);
+  }
+  const fin = simulate(NEV);
+  BAR_MAX = Math.max(...Object.values(fin.by)) * 1.03;
+  return fin;
 }
-for (let i = 0; i < N; i++) for (let j = 0; j < N; j++)
-  EV.push({ op: "exit", dest: null, s1: C_at(i, j), s2: null, addr: C_at(i, j), slot: 0, write: false, i, j });
-const NEV = EV.length;                                 // 240
 
-const EXPECT = [];
-for (let i = 0; i < N; i++) { const r = []; for (let j = 0; j < N; j++) { let s = 0; for (let k = 0; k < N; k++) s += Av(i, k) * Bv(k, j); r.push(s); } EXPECT.push(r); }
-
-function simulate(n) {
+function simulate(upto) {
   const mem = {};
   for (let i = 0; i < N; i++) for (let j = 0; j < N; j++) { mem[A_at(i, j)] = Av(i, j); mem[B_at(i, j)] = Bv(i, j); }
   const by = { A: 0, B: 0, C: 0, T: 0, X: 0 }, readCost = {};
   let cost = 0;
-  for (let s = 0; s < n; s++) {
+  for (let s = 0; s < upto; s++) {
     const e = EV[s], c = dist(e.addr);
     cost += c;
     by[e.op === "exit" ? "X" : region(e.addr)] += c;
@@ -314,64 +314,95 @@ function simulate(n) {
 
 /* ================= matrices ================= */
 const matsEl = document.getElementById("mats");
-const cellsA = [], cellsB = [], cellsC = [];
-function buildMat(name, store) {
-  const w = document.createElement("div"); w.className = "mat";
-  const nm = document.createElement("div"); nm.className = "name"; nm.textContent = name; w.appendChild(nm);
-  const g = document.createElement("div"); g.className = "grid4";
-  for (let i = 0; i < N * N; i++) { const c = document.createElement("div"); c.className = "cellv"; g.appendChild(c); store.push(c); }
-  w.appendChild(g); matsEl.appendChild(w);
-}
-function sym(t) { const s = document.createElement("div"); s.className = "sym"; s.textContent = t; matsEl.appendChild(s); }
-buildMat("A", cellsA); sym("×"); buildMat("B", cellsB); sym("="); buildMat("C", cellsC);
-for (let i = 0; i < N; i++) for (let j = 0; j < N; j++) {
-  cellsA[i * N + j].textContent = Av(i, j); cellsB[i * N + j].textContent = Bv(i, j);
+let cellsA = [], cellsB = [], cellsC = [];
+function buildMatrices() {
+  matsEl.replaceChildren();
+  cellsA = []; cellsB = []; cellsC = [];
+  const cw = N === 2 ? 46 : 33, ch = N === 2 ? 38 : 28, fs = N === 2 ? 15 : 12.5;
+  const one = (name, store, val) => {
+    const w = document.createElement("div"); w.className = "mat";
+    const nm = document.createElement("div"); nm.className = "name"; nm.textContent = name; w.appendChild(nm);
+    const g = document.createElement("div"); g.className = "gridn";
+    g.style.gridTemplateColumns = `repeat(${N}, ${cw}px)`;
+    g.style.gridAutoRows = ch + "px";
+    for (let i = 0; i < N; i++) for (let j = 0; j < N; j++) {
+      const c = document.createElement("div"); c.className = "cellv";
+      c.style.fontSize = fs + "px";
+      if (val) c.textContent = val(i, j);
+      g.appendChild(c); store.push(c);
+    }
+    w.appendChild(g); matsEl.appendChild(w);
+  };
+  const sym = (t) => { const s = document.createElement("div"); s.className = "sym"; s.textContent = t; matsEl.appendChild(s); };
+  one("A", cellsA, Av); sym("×"); one("B", cellsB, Bv); sym("="); one("C", cellsC, null);
+  document.getElementById("tmplabel").textContent = `tmp @${TMP}`;
 }
 const tmpBox = document.getElementById("tmpbox");
 
 /* ================= arena ================= */
-const S = 40, MAXX = 6, MAXY = 7;
-const padL = 54, padR = 54, padT = 26, padB = 104;
-const W = 2 * MAXX * S + padL + padR, H = MAXY * S + padT + padB;
-const PX = (x) => padL + (x + MAXX) * S, PY = (y) => padT + (MAXY - y) * S;
 const ns = "http://www.w3.org/2000/svg";
-const svg = document.createElementNS(ns, "svg");
-svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
-document.getElementById("arena").appendChild(svg);
-const mk = (n, at, p = svg) => { const e = document.createElementNS(ns, n); for (const k in at) e.setAttribute(k, at[k]); p.appendChild(e); return e; };
+let cellEl = {}, cellG = {}, wireLayer, PX, PY, RAD, WIREW;
+function buildArena() {
+  const host = document.getElementById("arena");
+  host.replaceChildren();
+  const MAXY = dist(NCELLS), MAXX = MAXY - 1;
+  const S = Math.round(288 / MAXY);
+  RAD = Math.round(S * 0.33); WIREW = Math.max(3, Math.round(S * 0.09));
+  const padL = S * 1.4, padR = S * 1.4, padT = S * 0.7, padB = S * 2.7;
+  const W = 2 * MAXX * S + padL + padR, H = MAXY * S + padT + padB;
+  PX = (x) => padL + (x + MAXX) * S;
+  PY = (y) => padT + (MAXY - y) * S;
 
-for (let k = 1; k <= MAXY; k++)
-  mk("path", { d: `M ${PX(-k)} ${PY(0)} L ${PX(0)} ${PY(k)} L ${PX(k)} ${PY(0)}`, fill: "none", stroke: "#e3dcd0", "stroke-width": 1 });
-for (let k = 1; k <= MAXY; k++)
-  mk("text", { x: PX(-k) - 6, y: PY(0) + 4, "text-anchor": "end", "font-size": 10.5,
-               fill: "#b7b0a3", "font-family": "var(--mono)" }).textContent = k;
+  const svg = document.createElementNS(ns, "svg");
+  svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  host.appendChild(svg);
+  const mk = (nm, at, p = svg) => { const e = document.createElementNS(ns, nm); for (const k in at) e.setAttribute(k, at[k]); p.appendChild(e); return e; };
 
-const wireLayer = mk("g", {});
-const cellEl = {}, cellG = {};
-for (let a = 1; a <= 49; a++) {
-  const p = pos(a);
-  cellEl[a] = mk("circle", { cx: PX(p.x), cy: PY(p.y), r: 13, fill: RCOL[region(a)],
-                             stroke: "#fff", "stroke-width": 2, opacity: .42 });
-  cellG[a] = p;
+  for (let k = 1; k <= MAXY; k++)
+    mk("path", { d: `M ${PX(-k)} ${PY(0)} L ${PX(0)} ${PY(k)} L ${PX(k)} ${PY(0)}`, fill: "none", stroke: "#e3dcd0", "stroke-width": 1 });
+  for (let k = 1; k <= MAXY; k++)
+    mk("text", { x: PX(-k) - 6, y: PY(0) + 4, "text-anchor": "end", "font-size": S * 0.26,
+                 fill: "#b7b0a3", "font-family": "var(--mono)" }).textContent = k;
+
+  wireLayer = mk("g", {});
+  cellEl = {}; cellG = {};
+  const labelAll = NCELLS <= 16;
+  for (let a = 1; a <= NCELLS; a++) {
+    const p = pos(a);
+    cellEl[a] = mk("circle", { cx: PX(p.x), cy: PY(p.y), r: RAD, fill: RCOL[region(a)],
+                               stroke: "#fff", "stroke-width": 2, opacity: .42 });
+    cellG[a] = p;
+    if (labelAll)
+      mk("text", { x: PX(p.x), y: PY(p.y) + S * 0.11, "text-anchor": "middle", "font-size": S * 0.28,
+                   "font-weight": 600, fill: "#fff", "font-family": "var(--mono)",
+                   "pointer-events": "none" }).textContent = a;
+  }
+  if (!labelAll)
+    for (const a of [1, N * N + 1, 2 * N * N + 1, TMP]) {
+      const p = pos(a);
+      mk("text", { x: PX(p.x), y: PY(p.y) - RAD - 6, "text-anchor": "middle", "font-size": S * 0.26,
+                   fill: "var(--ink-soft)", "font-family": "var(--mono)" }).textContent = a;
+    }
+
+  mk("line", { x1: PX(0), y1: PY(0), x2: PX(0), y2: PY(0) + S * 0.75, stroke: "#2b2f3a", "stroke-width": 4, "stroke-linecap": "round" });
+  mk("rect", { x: PX(0) - S * 1.45, y: PY(0) + S * 0.75, width: S * 2.9, height: S * 0.85, rx: 10, fill: "#2b2f3a" });
+  mk("text", { x: PX(0), y: PY(0) + S * 1.31, "text-anchor": "middle", "font-size": S * 0.27, "letter-spacing": "1.6",
+               fill: "#9aa3b2", "font-family": "Inter, sans-serif", "font-weight": 600 }).textContent = "CORE";
+  mk("circle", { cx: PX(0), cy: PY(0), r: RAD * 0.6, fill: "#2b2f3a", stroke: "#fff", "stroke-width": 2.5 });
+
+  document.getElementById("legend").innerHTML =
+    [["A", "rA", `1–${N * N}`], ["B", "rB", `${N * N + 1}–${2 * N * N}`],
+     ["C", "rC", `${2 * N * N + 1}–${3 * N * N}`], ["tmp", "rT", `${TMP}`]]
+      .map(([nm, v, r]) => `<span><i style="background:var(--${v})"></i>${nm} ${r}</span>`)
+      .join("") + `<span>dashed = write (free)</span>`;
 }
-for (const a of [1, 17, 33, 49]) {
-  const p = pos(a);
-  mk("text", { x: PX(p.x), y: PY(p.y) - 19, "text-anchor": "middle", "font-size": 10.5,
-               fill: "var(--ink-soft)", "font-family": "var(--mono)" }).textContent = a;
-}
-mk("line", { x1: PX(0), y1: PY(0), x2: PX(0), y2: PY(0) + 30, stroke: "#2b2f3a", "stroke-width": 4, "stroke-linecap": "round" });
-mk("rect", { x: PX(0) - 58, y: PY(0) + 30, width: 116, height: 34, rx: 10, fill: "#2b2f3a" });
-mk("text", { x: PX(0), y: PY(0) + 52, "text-anchor": "middle", "font-size": 11, "letter-spacing": "1.6",
-             fill: "#9aa3b2", "font-family": "Inter, sans-serif", "font-weight": 600 }).textContent = "CORE";
-mk("circle", { cx: PX(0), cy: PY(0), r: 8, fill: "#2b2f3a", stroke: "#fff", "stroke-width": 2.5 });
 
 function drawWire(a, color, dur) {
   const p = cellG[a];
   const d = `M ${PX(p.x)} ${PY(p.y)} L ${PX(p.x)} ${PY(0)} L ${PX(0)} ${PY(0)}`;
-  mk("path", { d, fill: "none", stroke: color, "stroke-width": 10, opacity: .15,
-               "stroke-linecap": "round", "stroke-linejoin": "round" }, wireLayer);
-  const w = mk("path", { d, fill: "none", stroke: color, "stroke-width": 3.4,
-                         "stroke-linecap": "round", "stroke-linejoin": "round" }, wireLayer);
+  const mkp = (at) => { const e = document.createElementNS(ns, "path"); for (const k in at) e.setAttribute(k, at[k]); wireLayer.appendChild(e); return e; };
+  mkp({ d, fill: "none", stroke: color, "stroke-width": WIREW * 2.8, opacity: .15, "stroke-linecap": "round", "stroke-linejoin": "round" });
+  const w = mkp({ d, fill: "none", stroke: color, "stroke-width": WIREW, "stroke-linecap": "round", "stroke-linejoin": "round" });
   if (dur > 90) {
     const len = w.getTotalLength();
     w.style.strokeDasharray = len; w.style.strokeDashoffset = -len;
@@ -392,7 +423,6 @@ for (const [key, label, col] of BARS) {
   const v = document.createElement("div"); v.className = "v"; v.textContent = "0";
   barsEl.append(k, t, v); fills[key] = f; vals[key] = v;
 }
-const BAR_MAX = 360;
 
 /* ================= render ================= */
 const irEl = document.getElementById("irline"), costEl = document.getElementById("costnum");
@@ -415,16 +445,16 @@ function render() {
   const maxRead = Math.max(1, ...Object.values(st.readCost));
   legendEl.hidden = heat; heatLegendEl.hidden = !heat;
   if (heat) {
-    let top = 1, topA = 49;
+    let top = 1, topA = TMP;
     for (const a in st.readCost) if (st.readCost[a] > top) { top = st.readCost[a]; topA = +a; }
     heatLegendEl.textContent = `fill = cumulative access cost · hottest ${top} @${topA}`;
   }
-  for (let a = 1; a <= 49; a++) {
+  for (let a = 1; a <= NCELLS; a++) {
     const c = cellEl[a], on = e && e.addr === a;
     const isDest = e && e.write && e.dest === a && !on;
     c.setAttribute("fill", heat ? heatFill(a, st, maxRead) : RCOL[region(a)]);
     c.setAttribute("opacity", heat ? 1 : (on ? 1 : (st.readCost[a] ? .55 : .32)));
-    c.setAttribute("r", on ? 15.5 : 13);
+    c.setAttribute("r", on ? RAD * 1.19 : RAD);
     c.setAttribute("stroke", on ? RCOL[region(a)] : (isDest ? "var(--ink-soft)" : "#fff"));
     c.setAttribute("stroke-width", 2 + (on ? 1 : 0));
     c.setAttribute("stroke-dasharray", isDest ? "3 3" : "none");
@@ -435,14 +465,15 @@ function render() {
   for (let i = 0; i < N; i++) for (let j = 0; j < N; j++) {
     const idx = i * N + j;
     cellsA[idx].className = "cellv"; cellsB[idx].className = "cellv"; cellsC[idx].className = "cellv";
+    cellsA[idx].style.fontSize = cellsB[idx].style.fontSize = cellsC[idx].style.fontSize = (N === 2 ? 15 : 12.5) + "px";
     if (e && e.op !== "exit") { if (i === e.i) cellsA[idx].classList.add("band"); if (j === e.j) cellsB[idx].classList.add("band"); }
     const v = st.mem[C_at(i, j)];
     cellsC[idx].textContent = v === undefined ? "·" : v;
     if (v === undefined) cellsC[idx].classList.add("empty");
-    else if (cur >= 14 * idx + 14) cellsC[idx].classList.add("done");
+    else if (cur >= CYC_PER_CELL * (idx + 1)) cellsC[idx].classList.add("done");
   }
   if (e) {
-    const mark = (arr, n, cls) => { if (n != null) arr[n].classList.add(...cls); };
+    const mark = (arr, at, cls) => arr[at].classList.add(...cls);
     if (e.op === "mul") {
       if (e.slot === 0) mark(cellsA, e.i * N + e.k, ["hot", "hotA"]);
       else {
@@ -481,10 +512,38 @@ function render() {
     irEl.innerHTML = `${head} &nbsp;<span class="dim">d(${e.addr})=${inc}</span> &nbsp;<span class="plus">+${inc}</span> &nbsp;<span class="dim">${tag}</span>`;
     deltaEl.textContent = `+${inc}`; deltaEl.classList.add("show");
   } else {
-    irEl.innerHTML = `<span class="dim">inputs placed free · A@1–16, B@17–32 · one access per clock · press Play</span>`;
+    irEl.innerHTML = `<span class="dim">inputs placed free · A@1–${N * N}, B@${N * N + 1}–${2 * N * N} · one access per clock · press Play</span>`;
     deltaEl.classList.remove("show");
   }
   verdictEl.classList.toggle("show", cur === NEV);
+}
+
+/* ================= size switch ================= */
+function setSize(n) {
+  const fin = buildProgram(n);
+  buildMatrices();
+  buildArena();
+  rangeEl.max = NEV;
+  cur = 0; playing = false;
+  document.getElementById("facts").innerHTML = [
+    `${N * N * (2 * N - 1)} instructions`,
+    `${N ** 3} <b>mul</b> · ${N * N * (N - 1)} <b>add</b>`,
+    `${NEV} cycles`,
+    `cost <b>${fin.cost.toLocaleString("en-US")}</b>`,
+  ].concat(N === 4 ? [`best known <b>800</b>`] : [])
+   .map(t => `<span class="fact">${t}</span>`).join("");
+  document.getElementById("laytable").innerHTML = [
+    ["A row-major", 1, N * N], ["B row-major", N * N + 1, 2 * N * N],
+    ["C row-major", 2 * N * N + 1, 3 * N * N], ["tmp", TMP, TMP],
+  ].map(([k, lo, hi]) => {
+    const dl = dist(lo), dh = dist(hi);
+    return `<tr><td>${k}</td><td>${lo === hi ? lo : lo + " – " + hi}</td>` +
+           `<td>d = ${dl === dh ? dl : dl + " – " + dh}</td></tr>`;
+  }).join("");
+  if (!EXPECT.every((r, i) => r.every((v, j) => fin.mem[C_at(i, j)] === v)))
+    console.error("matmul mismatch at n =", n);
+  setPlaying(false);
+  render();
 }
 
 /* ================= controls ================= */
@@ -511,6 +570,13 @@ document.getElementById("stepb").onclick = () => { if (cur > 0) cur--; setPlayin
 document.getElementById("reset").onclick = () => { cur = 0; setPlaying(false); render(); };
 rangeEl.oninput = () => { cur = +rangeEl.value; setPlaying(false); render(); };
 
+const sizesEl = document.getElementById("sizes");
+[2, 4].forEach((n) => {
+  const b = document.createElement("button");
+  b.className = "btn" + (n === 4 ? " on" : ""); b.textContent = `${n}×${n}`;
+  b.onclick = () => { [...sizesEl.children].forEach(c => c.classList.remove("on")); b.classList.add("on"); setSize(n); };
+  sizesEl.appendChild(b);
+});
 const SPEEDS = [["0.5×", 180], ["1×", 90], ["3×", 28], ["max", 5]];
 const speedsEl = document.getElementById("speeds");
 SPEEDS.forEach(([label, ms]) => {
@@ -529,10 +595,7 @@ document.addEventListener("keydown", (ev) => {
   else if (ev.key === "r") document.getElementById("reset").click();
 });
 
-const FIN = simulate(NEV);
-if (FIN.cost !== 1316 || !EXPECT.every((r, i) => r.every((v, j) => FIN.mem[C_at(i, j)] === v)))
-  console.error("model mismatch", FIN.cost);
-render();
+setSize(4);
 
 </script>
 </body>

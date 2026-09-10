@@ -1,0 +1,191 @@
+{
+ "name": "tape-matmul-2x2",
+ "profile": "tape-v0 (proposal, pending #2)",
+ "instruction_set": "v0 (mul, add only)",
+ "semantics": "C = A x B over wrapping 8-bit cells; byte-exact vs signed 8-bit reference",
+ "sizes": {
+  "N": 2,
+  "inputs": 8,
+  "outputs": 4,
+  "ops": 12
+ },
+ "operands": {
+  "A[0][0]": 1,
+  "A[0][1]": 2,
+  "A[1][0]": 3,
+  "A[1][1]": 4,
+  "B[0][0]": 5,
+  "B[0][1]": 6,
+  "B[1][0]": 7,
+  "B[1][1]": 8,
+  "C[0][0]": 9,
+  "C[0][1]": 10,
+  "C[1][0]": 11,
+  "C[1][1]": 12,
+  "PROD": 13
+ },
+ "tape": {
+  "read_events": [
+   {
+    "order": 0,
+    "operand": "A[0][0]",
+    "dst_cell": 1
+   },
+   {
+    "order": 1,
+    "operand": "A[0][1]",
+    "dst_cell": 2
+   },
+   {
+    "order": 2,
+    "operand": "A[1][0]",
+    "dst_cell": 3
+   },
+   {
+    "order": 3,
+    "operand": "A[1][1]",
+    "dst_cell": 4
+   },
+   {
+    "order": 4,
+    "operand": "B[0][0]",
+    "dst_cell": 5
+   },
+   {
+    "order": 5,
+    "operand": "B[0][1]",
+    "dst_cell": 6
+   },
+   {
+    "order": 6,
+    "operand": "B[1][0]",
+    "dst_cell": 7
+   },
+   {
+    "order": 7,
+    "operand": "B[1][1]",
+    "dst_cell": 8
+   }
+  ],
+  "write_events": [
+   {
+    "order": 0,
+    "operand": "C[0][0]",
+    "src_cell": 9
+   },
+   {
+    "order": 1,
+    "operand": "C[0][1]",
+    "src_cell": 10
+   },
+   {
+    "order": 2,
+    "operand": "C[1][0]",
+    "src_cell": 11
+   },
+   {
+    "order": 3,
+    "operand": "C[1][1]",
+    "src_cell": 12
+   }
+  ]
+ },
+ "ops": [
+  {
+   "op": "mul",
+   "dst": "C[0][0]",
+   "srcs": [
+    "A[0][0]",
+    "B[0][0]"
+   ]
+  },
+  {
+   "op": "mul",
+   "dst": "PROD",
+   "srcs": [
+    "A[0][1]",
+    "B[1][0]"
+   ]
+  },
+  {
+   "op": "add",
+   "dst": "C[0][0]",
+   "srcs": [
+    "C[0][0]",
+    "PROD"
+   ]
+  },
+  {
+   "op": "mul",
+   "dst": "C[0][1]",
+   "srcs": [
+    "A[0][0]",
+    "B[0][1]"
+   ]
+  },
+  {
+   "op": "mul",
+   "dst": "PROD",
+   "srcs": [
+    "A[0][1]",
+    "B[1][1]"
+   ]
+  },
+  {
+   "op": "add",
+   "dst": "C[0][1]",
+   "srcs": [
+    "C[0][1]",
+    "PROD"
+   ]
+  },
+  {
+   "op": "mul",
+   "dst": "C[1][0]",
+   "srcs": [
+    "A[1][0]",
+    "B[0][0]"
+   ]
+  },
+  {
+   "op": "mul",
+   "dst": "PROD",
+   "srcs": [
+    "A[1][1]",
+    "B[1][0]"
+   ]
+  },
+  {
+   "op": "add",
+   "dst": "C[1][0]",
+   "srcs": [
+    "C[1][0]",
+    "PROD"
+   ]
+  },
+  {
+   "op": "mul",
+   "dst": "C[1][1]",
+   "srcs": [
+    "A[1][0]",
+    "B[0][1]"
+   ]
+  },
+  {
+   "op": "mul",
+   "dst": "PROD",
+   "srcs": [
+    "A[1][1]",
+    "B[1][1]"
+   ]
+  },
+  {
+   "op": "add",
+   "dst": "C[1][1]",
+   "srcs": [
+    "C[1][1]",
+    "PROD"
+   ]
+  }
+ ]
+}

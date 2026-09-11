@@ -2,7 +2,9 @@
 
 Extends [`v1`](../v1/) with a single op that writes an integer
 immediate into a memory cell. No read is performed, so the op
-incurs no cost under the model.
+incurs no cost under the original
+[simplified Bill Dally model](../../models/simplified-bill-dally/).
+A model that charges writes charges the destination write.
 
 Sufficient for kernels that need constants materialized in memory
 (loop bounds, masks, accumulator init, lookup-table seeding) without

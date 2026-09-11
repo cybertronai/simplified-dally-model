@@ -1,8 +1,9 @@
 """Upper-half Manhattan figure for the simplified explicit communication model.
 
-A single arena above the core: every byte (inputs, intermediates, outputs)
+A single arena above the core: every 32-bit word (inputs, intermediates, outputs)
 lives in the upper half-plane and is read at cost = Manhattan distance from
-the core. Reads are priced; writes and arithmetic are free.
+the core. Reads are priced; writes are free. Arithmetic charges its source
+reads but has no additional charge.
 
 Renders ``simplified_explicit_communication_model.svg/png`` alongside this
 script. Adapted from ``manhattan_function_figure.py`` (which renders the

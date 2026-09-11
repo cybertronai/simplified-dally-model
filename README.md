@@ -10,11 +10,11 @@ instruction sets for programs running on them.
 
 Each model has its own specification under [`models/`](models/).
 
-| Model | Description | Status |
-|-------|-------------|--------|
-| 1. [Simplified Dally grid model](models/simplified-bill-dally/) | Original/obsolete | Specified |
-| 2. [Dally single core with tape](models/single-core-with-tape/) | Grid with one processor, 2 tapes | Specified |
-| 3. [Spatial computer](models/spatial-computer/) | A processor at every node. | Placeholder |
+| Model | Description 
+|-------|-------------
+| 1. [Simplified Dally grid model](models/simplified-bill-dally/) | Original/obsolete 
+| 2. [Dally single core with tape](models/single-core-with-tape/) | Grid with one processor, 2 tapes 
+| 3. Spatial computer (tbd) | A processor at every node.
 
 ## Instruction sets
 

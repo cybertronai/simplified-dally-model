@@ -70,13 +70,12 @@ cell. Input enters scratch through `recv`; output is produced by `send`.
 
 ```text
 recv d    # next 32-bit input word appears in cell d; charge scratch write
-send s    # append the byte in cell s to output; charge scratch read
+send s    # append the 32-bit word in cell s to output; charge scratch read
 ```
 
-Receiving advances the input tape by one word. Sending appends one byte
-and advances the output tape by one byte. The byte convention is the **low
-eight bits** of the source word; sending still reads and charges the whole
-32-bit scratch word. Neither instruction accesses a second scratch cell.
+Receiving advances the input tape by one word. Sending appends the full
+32-bit source word and advances the output tape by one word. It leaves the
+source cell unchanged. Neither instruction accesses a second scratch cell.
 The input tape is never written and the output tape is never read.
 
 There is no preloaded-input exemption or implicit final output read in this
@@ -120,8 +119,8 @@ send 1
 | Instruction | Result | Energy | Time |
 |-------------|--------|--------|------|
 | `recv 1` | Cell 1 contains `0x123456AB` | 14 fJ | 2.8 ps |
-| `send 1` | Output contains byte `0xAB` | 14 fJ | 5.6 ps |
-| **Total** | One input word consumed; one output byte produced | **28 fJ** | **8.4 ps** |
+| `send 1` | Output contains word `0x123456AB` | 14 fJ | 5.6 ps |
+| **Total** | One input word consumed; one output word produced | **28 fJ** | **8.4 ps** |
 
 One scratch cell is allocated, occupying 1 µm² under the area convention.
 

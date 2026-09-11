@@ -33,7 +33,7 @@ addresses, respectively. They are equivalent to `%d = recv` and `send %s`.
 | `cmp` | `%d = cmp %a, %b, <pred>` | `mem[d] = (mem[a] <pred> mem[b]) ? 1 : 0` |
 | `select` | `%d = select %c, %t, %f` | `mem[d] = mem[c] ? mem[t] : mem[f]` |
 | `recv` | `%d = recv` | Consume the next 32-bit input word and store it in `mem[d]`. |
-| `send` | `send %s` | Append the byte from `mem[s]` to the output stream. |
+| `send` | `send %s` | Append the 32-bit word from `mem[s]` to the output stream. |
 
 ## Tape semantics
 
@@ -43,13 +43,10 @@ writes that word to scratch cell `d`. Receiving past the supplied input is
 invalid. Input words enter scratch through `recv` before other instructions
 can use them.
 
-The output tape is write-only and receives a sequence of bytes. Each
-`send s` reads scratch cell `s`, appends one byte, and advances the output
+The output tape is write-only and receives a sequence of 32-bit words. Each
+`send s` reads scratch cell `s`, appends one word, and advances the output
 position once. It leaves `mem[s]` unchanged. There are no tape seek,
 rewind, input-write, or output-read operations.
-
-**Byte-selection convention:** `send` emits the low eight bits of the
-32-bit source word, `mem[s] & 0xff`.
 
 ## Costs under the single-core-with-tape model
 
@@ -61,7 +58,7 @@ from the processor in 1 μm hops.
 | `recv d` | One write to `d`: 32-bit address + 32-bit data | `2r_d` fJ | `0.4r_d` ps |
 | `send s` | One read from `s`: 32-bit address request + 32-bit data response | `2r_s` fJ | `0.8r_s` ps |
 
-`send` pays for a full 32-bit scratch read even though it emits one byte.
+`send` pays for a full 32-bit scratch read and emits that word.
 `recv` pays for the destination write, without a scratch source read.
 No independent tape-transport energy or latency is specified; the above
 charges account for their scratch accesses. These costs belong to the
@@ -74,7 +71,7 @@ and the next input word is `0x12345641`.
 
 ```text
 recv 1       # mem[1] = 0x12345641; one scratch write
-send 1       # append byte 0x41; one full-word scratch read
+send 1       # append word 0x12345641; one full-word scratch read
 ```
 
 The equivalent LLVM-flavored form is:
@@ -85,5 +82,5 @@ send %1
 ```
 
 The receive costs `6 fJ` and `1.2 ps`; the send costs `6 fJ` and `2.4 ps`.
-Together they consume one input word, produce one output byte, and charge
+Together they consume one input word, produce one output word, and charge
 `12 fJ` and `3.6 ps` under the single-core-with-tape model.

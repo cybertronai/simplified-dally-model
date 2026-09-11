@@ -1,71 +1,40 @@
-# Simplified Explicit Communication Model
+# Explicit Communication Models
 
 Bill Dally ([*On the Model of Computation*, CACM
 2022](https://cacm.acm.org/opinion/on-the-model-of-computation-point/))
-proposed modeling algorithm data movement explicitly on the Manhattan
-grid.
+proposed modeling algorithm data movement explicitly on a Manhattan grid.
+This repository describes models inspired by that approach and versioned
+instruction sets for programs running on them.
 
-This is a simplified implementation of that model for a single
-processor, designed to price a single function call.
+## Models
 
-**[▶ Live animation](https://cybertronai.github.io/simplified-dally-model/)** — a naive
-4×4 matmul executed one priced access per clock, with the bill accumulating as it runs.
+Each model has its own specification under [`models/`](models/).
 
-![Naive 4x4 matmul priced under the model](naive_4x4_matmul.gif)
-
-![Upper-half-plane Manhattan layout](simplified_explicit_communication_model.svg)
-
-- Processor is at the origin, memory is arranged as a 2D grid in the
-  upper half-plane around it.
-- Every cell is linearly indexed; `ceil(sqrt(idx))` gives the Manhattan
-  distance from the core.
-
-## Cost model (what is priced)
-Every write is followed by a read, every arithmetic instruction involves a read, hence we absorb every cost into associated read.
-
-- **Reads are priced.** The cost of a read is the Manhattan distance
-  from the core to the cell being read.
-- **Writes are free.**
-- **Arithmetic is free.**
-
-## Function semantics
-
-- **At the start of a call**, the location of every input byte is
-  specified by the caller, in order of Python signature and data-layout.
-- **At the end of a call**, the location of every output byte is
-  specified by the caller, these incur standard read cost.
-
-## Worked example
-
-```python
-def myfunc(a, b, c, d, e):
-    return a*b + c*d + e
-
-# IR, using three-address code. op dest,src1,src2
-1,2,3,4,5
-mul 1,1,2
-mul 2,3,4
-add 1,1,2
-add 1,5
-1
-```
-
-
-Put `a→1, b→2, c→3, d→4,e→5`
-
-| step | action                                  | reads             | cost |
-|-----:|-----------------------------------------|-------------------|-----:|
-| 1    | `t1 = a * b`, write `t1 → 1`            | `a@1`, `b@2`      | 1+2  |
-| 2    | `t2 = c * d`, write `t2 → 2`            | `c@3`, `d@4`      | 2+2  |
-| 3    | `s  = t1 + t2`, write `s  → 1`          | `t1@1`, `t2@2`    | 1+2  |
-| 4    | `r  = s + e`, write `r  → 1`            | `s@1`, `e@5`      | 1+3  |
-| exit | return value read at output address `1` | `r@1`             | 1    |
-
-
-**Total cost:**
-`(1+2) + (2+2) + (1+2) + (1+3) + 1 = 15`.
+| Model | Description | Status |
+|-------|-------------|--------|
+| 1. [Simplified Bill Dally model](models/simplified-bill-dally/) | The existing single-processor model: reads cost Manhattan distance; writes and arithmetic are free. | Specified |
+| 2. [Bill Dally's single core with tape](models/single-core-with-tape/) | One processor, 32-bit scratch words, a read-only input tape, and a write-only output tape. Scratch reads and writes have energy and propagation-time costs. Limits: 256 mm² and 24 hours. | Specified |
+| 3. [Spatial computer](models/spatial-computer/) | A processor at every interval. | Placeholder |
 
 ## Instruction sets
 
-For the list of valid instructions, see
-[`instruction-sets/`](instruction-sets/).
+Choose a **model** to specify the machine, communication costs, I/O, and
+resource limits, and an **instruction-set version** to specify the available
+operations. These are separate choices, subject to the model's I/O support.
+See [`instruction-sets/`](instruction-sets/) for versions v0–v4.
+
+The existing v0–v3 operations retain their meanings. [v4](instruction-sets/v4/)
+adds `recv d` and `send s` for sequential tape I/O. Receiving charges a scratch
+write to `d`; sending charges a scratch read from `s`. The single-core-with-tape
+model supplies those costs and the tapes.
+
+## Existing model animation
+
+The [live matmul animation](https://cybertronai.github.io/simplified-dally-model/)
+illustrates **model 1**, with its original distance-based bill. Its animation
+clocks do not represent the physical timing of model 2.
+
+![Naive 4×4 matmul under the simplified Bill Dally model](naive_4x4_matmul.gif)
+
+The original geometry, function-call semantics, and worked example are in the
+[simplified Bill Dally model specification](models/simplified-bill-dally/).

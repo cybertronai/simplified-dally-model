@@ -12,9 +12,9 @@ Each model has its own specification under [`models/`](models/).
 
 | Model | Description | Status |
 |-------|-------------|--------|
-| 1. [Simplified Bill Dally model](models/simplified-bill-dally/) | The existing single-processor model: reads cost Manhattan distance, writes are free, and arithmetic is charged through its source reads. | Specified |
-| 2. [Bill Dally's single core with tape](models/single-core-with-tape/) | One processor, a coordinate-bounded grid of 32-bit scratch words, and input/output tapes. Each charged scratch access has a 50 fJ / 50 ps floor; tape I/O is excluded from scoring. | Specified |
-| 3. [Spatial computer](models/spatial-computer/) | A processor at every interval. | Placeholder |
+| 1. [Simplified Dally grid model](models/simplified-bill-dally/) | Original/obsolete | Specified |
+| 2. [Dally single core with tape](models/single-core-with-tape/) | Grid with one processor, 2 tapes | Specified |
+| 3. [Spatial computer](models/spatial-computer/) | A processor at every node. | Placeholder |
 
 ## Instruction sets
 

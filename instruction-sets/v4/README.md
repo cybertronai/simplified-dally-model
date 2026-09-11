@@ -50,24 +50,30 @@ rewind, input-write, or output-read operations.
 
 ## Costs under the single-core-with-tape model
 
-For a scratch cell at `(x, y)`, let `r = |x| + y` be its Manhattan distance
-from the processor in 1 μm hops.
+The workload fixes the complete caller-supplied input stream and the
+required output word stream. Every compared solution consumes the whole
+input and produces the required output. Their tape I/O is therefore fixed
+across solutions, so the model excludes `recv` and `send` from both the
+energy and time score.
 
-| Instruction | Charged scratch access | Energy | Time |
-|-------------|------------------------|--------|------|
-| `recv d` | One write to `d`: 32-bit address + 32-bit data | `2r_d` fJ | `0.4r_d` ps |
-| `send s` | One read from `s`: 32-bit address request + 32-bit data response | `2r_s` fJ | `0.8r_s` ps |
+| Instruction | Physical scratch effect | Scored energy | Scored time |
+|-------------|-------------------------|---------------|-------------|
+| `recv d` | Write the next 32-bit input word to `d` | `0 fJ` | `0 ps` |
+| `send s` | Read the full 32-bit word from `s` and append it to output | `0 fJ` | `0 ps` |
 
-`send` pays for a full 32-bit scratch read and emits that word.
-`recv` pays for the destination write, without a scratch source read.
-No independent tape-transport energy or latency is specified; the above
-charges account for their scratch accesses. These costs belong to the
-single-core-with-tape model, whose serialized timing adds the access times.
+This accounting exclusion includes the scratch write performed by `recv`
+and the scratch read performed by `send`. Both instructions are exempt
+from the model's 50 fJ and 50 ps floors. Other instructions retain their
+charged scratch reads and writes; see the
+[model's cost rules](../../models/single-core-with-tape/).
+
+The tapes do not provide scratch-to-scratch copying: the input is a fixed,
+read-only stream, and output words cannot be read back. Their positions
+advance sequentially according to the tape semantics above.
 
 ## Example
 
-Suppose scratch cell `1` is at `(2, 1)`, so its distance is three hops,
-and the next input word is `0x12345641`.
+Suppose the next input word is `0x12345641`.
 
 ```text
 recv 1       # mem[1] = 0x12345641; one scratch write
@@ -81,6 +87,5 @@ The equivalent LLVM-flavored form is:
 send %1
 ```
 
-The receive costs `6 fJ` and `1.2 ps`; the send costs `6 fJ` and `2.4 ps`.
-Together they consume one input word, produce one output word, and charge
-`12 fJ` and `3.6 ps` under the single-core-with-tape model.
+Together they consume one input word, produce the same word on the output
+tape, and score `0 fJ` and `0 ps` under the single-core-with-tape model.

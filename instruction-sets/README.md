@@ -18,4 +18,4 @@ adding v4 does not give it tape semantics or change its costs.
 | [`v1`](v1/) | v0 + `and`, `or`, `not`, `xor` | Adds bitwise logic kernels (popcount, parity, bit-reverse, masking, XOR-based hashing). |
 | [`v2`](v2/) | v1 + `set`                | Adds integer-immediate store; constants no longer require a caller-supplied cell. |
 | [`v3`](v3/) | v2 + `div`, `cmp`, `select`, `abs` | Adds the primitives needed for Gaussian elimination with partial pivoting (LU). |
-| [`v4`](v4/) | v3 + `recv`, `send` | Adds sequential input-tape reads and output-tape writes, charged through scratch accesses by the selected model. |
+| [`v4`](v4/) | v3 + `recv`, `send` | Adds sequential 32-bit input/output tape operations, excluded from the single-core-with-tape model's energy/time score. |

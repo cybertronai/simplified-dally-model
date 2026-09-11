@@ -175,7 +175,8 @@
     Bill Dally (<a href="https://cacm.acm.org/opinion/on-the-model-of-computation-point/">On the Model of Computation</a>, CACM 2022)
     proposed pricing algorithms by their data movement. Memory is a 2D grid around the core;
     an access to address <span class="m">a</span> costs its Manhattan distance
-    <span class="m">⌈√a⌉</span>, while writes and arithmetic are free. Below, matrix multiply
+    <span class="m">⌈√a⌉</span>. Writes are free, and arithmetic instructions pay for their source reads.
+    Below, matrix multiply
     runs one access per clock so the bill accumulates in the open — start with 2×2, then
     compare the naive 4×4 against the tiled one.
   </p>

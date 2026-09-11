@@ -17,6 +17,7 @@ processor, designed to price a single function call.
 
 - Processor is at the origin, memory is arranged as a 2D grid in the
   upper half-plane around it.
+- Each cell holds one **32-bit word**.
 - Every cell is linearly indexed; `ceil(sqrt(idx))` gives the Manhattan
   distance from the core.
 
@@ -25,18 +26,22 @@ processor, designed to price a single function call.
 Costs are unitless distance totals. This model does not assign physical energy
 or elapsed time to an access.
 
-Every write is followed by a read, every arithmetic instruction involves a read, hence we absorb every cost into associated read.
+All modeled cost is absorbed into the associated reads. Arithmetic instructions
+charge their source reads; writes and the arithmetic operation itself add no
+separate charge.
 
 - **Reads are priced.** The cost of a read is the Manhattan distance
   from the core to the cell being read.
 - **Writes are free.**
-- **Arithmetic is free.**
+- **Arithmetic has no additional charge.** Its source reads incur the
+  standard read cost. An immediate `set` performs no source read and therefore
+  has zero cost in this model.
 
 ## Function semantics
 
-- **At the start of a call**, the location of every input byte is
+- **At the start of a call**, the location of every input 32-bit word is
   specified by the caller, in order of Python signature and data-layout.
-- **At the end of a call**, the location of every output byte is
+- **At the end of a call**, the location of every output 32-bit word is
   specified by the caller, these incur standard read cost.
 
 ## Worked example

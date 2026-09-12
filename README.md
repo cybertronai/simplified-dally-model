@@ -12,9 +12,9 @@ Each model has its own specification under [`models/`](models/).
 
 | Model | Description 
 |-------|-------------
-| 1. [Simplified Dally grid model](models/simplified-bill-dally/) | Original/obsolete 
-| 2. [Dally single core with tape](models/single-core-with-tape/) | Grid with one processor, 2 tapes 
-| 3. [Spatial computer](models/spatial-computer/) | Processors at pitch 128, 48 KiB of local 32-bit scratch per processor, and bottom-edge tapes.
+| 1. [Simplified Dally grid model](models/simplified-bill-dally/) | Original
+| 2. [Dally single core with tape](models/single-core-with-tape/) | Grid with one processor, 2 input/output tapes 
+| 3. [Spatial computer](models/spatial-computer/) | Grid with processors every 128 steps, tapes at the bottom edge.
 
 ## Instruction sets
 

@@ -1,7 +1,8 @@
 # v4 — v3 plus tape I/O: `recv, send`
 
 Extends [v3](../v3/) with sequential input and output operations for
-[Bill Dally's single core with tape](../../models/single-core-with-tape/).
+[Bill Dally's single core with tape](../../models/single-core-with-tape/)
+and the [spatial computer](../../models/spatial-computer/).
 All v3 operations and their effects are retained below. The selected
 [model](../../models/) determines scratch layout and access costs;
 this instruction-set version does not change the costs of earlier models.
@@ -48,6 +49,13 @@ The output tape is write-only and receives a sequence of 32-bit words. Each
 position once. It leaves `mem[s]` unchanged. There are no tape seek,
 rewind, input-write, or output-read operations.
 
+The selected model defines which tape pair an instruction uses. Model 2
+has one pair for its single processor. Model 3 has one pair per processor
+column, shared in a declared order by that column's processors; tape
+operands must be local to the issuing processor. Its workload fixes how
+the global word streams are striped across ports. These rules change
+neither the word width nor the sequential effects of `recv` and `send`.
+
 ## Costs under the single-core-with-tape model
 
 The workload fixes the complete caller-supplied input stream and the
@@ -70,6 +78,21 @@ charged scratch reads and writes; see the
 The tapes do not provide scratch-to-scratch copying: the input is a fixed,
 read-only stream, and output words cannot be read back. Their positions
 advance sequentially according to the tape semantics above.
+
+## Costs under the spatial-computer model
+
+Model 3 charges the vertical on-chip path between a bottom tape port and
+the issuing processor, plus the operand's local scratch access. At
+processor row `j`, let `y = 128j + 64` and let `d` be the operand's local
+Manhattan distance. Either tape instruction costs
+`y + max(50, 2d)` fJ and takes `j + 2` cycles without contention, with a
+1 ns model cycle. Link contention, scratch service, and tape ordering can
+add waiting time. Physical off-chip crossing costs are excluded.
+
+Non-tape instructions retain their scratch effects; a remote operand is
+served by charged mesh requests and responses. Placement, parallel trace
+metadata, legal schedules, and the complete cost rules are defined by the
+[spatial-computer specification](../../models/spatial-computer/).
 
 ## Example
 

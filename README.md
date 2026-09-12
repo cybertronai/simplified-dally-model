@@ -14,7 +14,7 @@ Each model has its own specification under [`models/`](models/).
 |-------|-------------
 | 1. [Simplified Dally grid model](models/simplified-bill-dally/) | Original/obsolete 
 | 2. [Dally single core with tape](models/single-core-with-tape/) | Grid with one processor, 2 tapes 
-| 3. Spatial computer (tbd) | A processor at every node.
+| 3. [Spatial computer](models/spatial-computer/) | Processors at pitch 128, 48 KiB of local 32-bit scratch per processor, and bottom-edge tapes.
 
 ## Instruction sets
 
@@ -30,11 +30,15 @@ The single-core-with-tape model excludes these operations from its energy
 and time scores to focus on solution-dependent computation. Other
 instructions are charged for their scratch reads and writes.
 
+The spatial computer also uses v4, with one ordered instruction stream per
+processor and one tape pair per column. It charges on-chip tape transport
+and scratch access, and accounts for concurrent execution and mesh capacity.
+
 ## Existing model animation
 
 The [live matmul animation](https://cybertronai.github.io/simplified-dally-model/)
 illustrates **model 1**, with its original distance-based bill. Its animation
-clocks do not represent the physical timing of model 2.
+clocks do not represent the timing of models 2 or 3.
 
 ![Naive 4×4 matmul under the simplified Bill Dally model](naive_4x4_matmul.gif)
 

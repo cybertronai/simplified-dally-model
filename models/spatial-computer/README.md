@@ -4,9 +4,7 @@ Extending simplified Bill Dally's [2D grid model](https://github.com/cybertronai
 
 **Model 3.** A two-dimensional mesh with a processor every **128 grid
 nodes in both directions**, **32-bit words**, and input/output tapes along
-the **bottom edge, `y = 0`**. Each processor has **48 KiB of local scratch
-memory** and four neighbor links. Processors execute concurrently;
-communication consumes energy, time, and link capacity.
+the **bottom edge, `y = 0`**.
 
 The local memory size and one-word-per-cycle mesh are inspired by
 [Cerebras](#calibration-and-scope). This is an abstract machine, not a
@@ -17,8 +15,7 @@ with the placement and parallel execution rules below.
 
 ## Geometry and memory
 
-All coordinate bounds are inclusive. A node is one position on the grid;
-an addressable memory node stores one 32-bit word.
+A node is one position on the grid, stores one 32-bit word.
 
 | Quantity | Default |
 |----------|---------|

@@ -1,5 +1,7 @@
 # Spatial computer — pitch 128
 
+Extending simplified Bill Dally's [2D grid model](https://github.com/cybertronai/simplified-dally-model/tree/main/models/simplified-bill-dally) with multiple cores
+
 **Model 3.** A two-dimensional mesh with a processor every **128 grid
 nodes in both directions**, **32-bit words**, and input/output tapes along
 the **bottom edge, `y = 0`**. Each processor has **48 KiB of local scratch

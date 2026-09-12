@@ -1,0 +1,127 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="920" viewBox="0 0 1200 920" role="img" aria-labelledby="title description">
+  <title id="title">Spatial computer with a processor pitch of 128 nodes</title>
+  <desc id="description">An illustrative three-by-three group of processors embedded in a two-dimensional memory grid. Processors are spaced every 128 nodes in each direction. Bidirectional mesh links connect neighboring processors; memory nodes belong to each processor's local scratch. Each processor column has an input and output tape port at the bottom, y equals zero. The full abstract grid spans x equals minus 16,000 through 15,999 and y equals 1 through 16,000, with 250 processor columns and 125 processor rows. Words are 32 bits. An inset shows a 128-by-128-node tile with a reserved 64-by-64-node core and router region, leaving 12,288 addressable words, or 48 KiB. This is a logical schematic, not a physical chip floorplan.</desc>
+  <defs>
+    <pattern id="grid" x="164" y="216" width="32" height="24" patternUnits="userSpaceOnUse">
+      <circle cx="16" cy="12" r="2.4" fill="#a2b0c3"/>
+    </pattern>
+    <pattern id="tile-grid" width="16" height="16" patternUnits="userSpaceOnUse">
+      <path d="M0 0H16M0 0V16" fill="none" stroke="#cdddec" stroke-width="1"/>
+    </pattern>
+    <marker id="dimension-arrow" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto-start-reverse">
+      <path d="M6 3L0 0V6Z" fill="#68788d"/>
+    </marker>
+    <marker id="link-arrow" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto-start-reverse">
+      <path d="M6 3L0 0V6Z" fill="#7890ad"/>
+    </marker>
+    <g id="processor">
+      <path d="M0 -19L19 14H-19Z" fill="#fff7e6" stroke="#e49a14" stroke-width="5" stroke-linejoin="round"/>
+      <circle cy="3" r="3.4" fill="#263e61"/>
+    </g>
+    <g id="tape-port">
+      <path d="M-10 -12V15H10V-12" fill="#dff1e6" stroke="#409268" stroke-width="2.5" stroke-linejoin="round"/>
+      <path d="M-4 -6V8M4 -6V8" stroke="#409268" stroke-width="1.6"/>
+    </g>
+    <style>
+      text { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; fill: #24354d; }
+      .muted { fill: #64748b; }
+      .small { font-size: 15px; }
+      .body { font-size: 17px; }
+      .label { font-size: 18px; font-weight: 600; }
+      .dimension { fill: none; stroke: #68788d; stroke-width: 1.3; marker-start: url(#dimension-arrow); marker-end: url(#dimension-arrow); }
+    </style>
+  </defs>
+
+  <rect width="1200" height="920" fill="#ffffff"/>
+  <text x="48" y="58" font-size="32" font-weight="700">Spatial computer · 128-node processor pitch</text>
+  <text x="48" y="91" class="body muted">32-bit words · bottom-edge tape I/O · bidirectional processor mesh</text>
+
+  <rect x="48" y="123" width="756" height="665" rx="18" fill="#f8fafc" stroke="#e2e8f0"/>
+  <text x="72" y="154" class="small muted">ILLUSTRATIVE 3 × 3 PROCESSOR REGION</text>
+
+  <!-- Local memory nodes are compressed; dots do not represent mesh routers. -->
+  <rect x="140" y="200" width="596" height="448" fill="url(#grid)"/>
+  <path d="M140 200V648H736" fill="none" stroke="#c5d0dd" stroke-width="1"/>
+  <path d="M140 200H736V648" fill="none" stroke="#c5d0dd" stroke-width="1"/>
+
+  <!-- Mesh links connect processor centers; arrow ends clear the processor symbols. -->
+  <g fill="none" stroke="#7890ad" stroke-width="2" marker-start="url(#link-arrow)" marker-end="url(#link-arrow)">
+    <path d="M211 228H405"/>
+    <path d="M467 228H661"/>
+    <path d="M211 420H405"/>
+    <path d="M467 420H661"/>
+    <path d="M211 612H405"/>
+    <path d="M467 612H661"/>
+    <path d="M180 255V386"/>
+    <path d="M436 255V386"/>
+    <path d="M692 255V386"/>
+    <path d="M180 447V578"/>
+    <path d="M436 447V578"/>
+    <path d="M692 447V578"/>
+  </g>
+
+  <!-- The pitch is measured in grid nodes, not physical distance. -->
+  <path d="M180 184V202M436 184V202" stroke="#a5b1bf" stroke-width="1"/>
+  <path d="M184 187H432" class="dimension"/>
+  <rect x="259" y="170" width="98" height="23" rx="5" fill="#f8fafc"/>
+  <text x="308" y="186" class="small" text-anchor="middle">128 nodes</text>
+
+  <path d="M112 228H137M112 420H137" stroke="#a5b1bf" stroke-width="1"/>
+  <path d="M120 232V416" class="dimension"/>
+  <rect x="107" y="275" width="25" height="99" rx="5" fill="#f8fafc"/>
+  <text x="121" y="325" class="small" text-anchor="middle" transform="rotate(-90 121 325)">128 nodes</text>
+
+  <!-- Each bottom tape port connects to the bottom processor in its column. -->
+  <path d="M180 628V680M436 628V680M692 628V680" stroke="#409268" stroke-width="7" stroke-linecap="round"/>
+  <path d="M141 693H737" stroke="#acc7b9" stroke-width="1.5"/>
+  <use href="#tape-port" x="180" y="693"/>
+  <use href="#tape-port" x="436" y="693"/>
+  <use href="#tape-port" x="692" y="693"/>
+  <text x="91" y="699" class="small" fill="#31764f">y = 0</text>
+
+  <use href="#processor" x="180" y="228"/>
+  <use href="#processor" x="436" y="228"/>
+  <use href="#processor" x="692" y="228"/>
+  <use href="#processor" x="180" y="420"/>
+  <use href="#processor" x="436" y="420"/>
+  <use href="#processor" x="692" y="420"/>
+  <use href="#processor" x="180" y="612"/>
+  <use href="#processor" x="436" y="612"/>
+  <use href="#processor" x="692" y="612"/>
+
+  <text x="435" y="736" class="label" text-anchor="middle" fill="#31764f">Input / output tape</text>
+  <text x="435" y="761" class="small muted" text-anchor="middle">One port per processor column at the bottom boundary</text>
+
+  <!-- A tile accounts for the Cerebras-inspired local memory capacity. -->
+  <rect x="830" y="123" width="322" height="665" rx="18" fill="#f8fafc" stroke="#e2e8f0"/>
+  <text x="854" y="154" class="small muted">ONE PROCESSOR TILE</text>
+  <text x="991" y="188" class="label" text-anchor="middle">128 × 128 nodes</text>
+  <rect x="863" y="214" width="256" height="256" fill="#e8f1fa" stroke="#a2b9cf" stroke-width="1.5"/>
+  <rect x="863" y="214" width="256" height="256" fill="url(#tile-grid)"/>
+  <rect x="927" y="278" width="128" height="128" fill="#fff1d6" stroke="#e0a743" stroke-width="1.7"/>
+  <use href="#processor" x="991" y="310" transform="translate(247.75 77.5) scale(.75)"/>
+  <text x="991" y="350" class="small" font-weight="600" text-anchor="middle">64 × 64</text>
+  <text x="991" y="372" font-size="14" text-anchor="middle">reserved</text>
+  <text x="991" y="392" font-size="14" text-anchor="middle">core / router</text>
+  <text x="991" y="503" class="label" text-anchor="middle">12,288 addressable words</text>
+  <text x="991" y="530" font-size="23" font-weight="700" text-anchor="middle">48 KiB per processor</text>
+  <text x="991" y="555" class="small muted" text-anchor="middle">(128² − 64²) × 4 bytes</text>
+
+  <path d="M854 579H1128" stroke="#dce4ed"/>
+  <use href="#processor" x="869" y="610" transform="translate(260.7 183) scale(.7)"/>
+  <text x="897" y="617" class="body">Processor</text>
+  <circle cx="869" cy="651" r="4" fill="#a2b0c3"/>
+  <text x="897" y="657" class="body">Memory node · 32 bits</text>
+  <use href="#processor" transform="translate(860 693) scale(.3)"/>
+  <use href="#processor" transform="translate(920 693) scale(.3)"/>
+  <path d="M873 693H907" fill="none" stroke="#7890ad" stroke-width="1.5" marker-start="url(#link-arrow)" marker-end="url(#link-arrow)"/>
+  <text x="937" y="699" class="small">Processor mesh link</text>
+  <text x="854" y="743" class="small muted">Mesh links connect processors;</text>
+  <text x="854" y="765" class="small muted">each tile owns local scratch.</text>
+
+  <text x="48" y="832" font-size="20" font-weight="650">Full grid: 250 processor columns × 125 processor rows</text>
+  <text x="48" y="863" class="body">x = −16,000 … 15,999</text>
+  <text x="365" y="863" class="body">y = 1 … 16,000</text>
+  <text x="652" y="863" class="body">31,250 processors</text>
+  <text x="48" y="896" class="small muted">Schematic, not to scale. Intermediate nodes are omitted; the inset is a logical allocation, not a physical chip floorplan.</text>
+</svg>

@@ -80,7 +80,8 @@ This model supports instruction sets [v0](../../instruction-sets/v0/),
 [v1](../../instruction-sets/v1/), [v2](../../instruction-sets/v2/),
 [v3](../../instruction-sets/v3/), and the non-tape operations in
 [v4](../../instruction-sets/v4/). It has no tape interface: v4 `recv` and
-`send` require [Bill Dally's single core with tape](../single-core-with-tape/).
+`send` require [Bill Dally's single core with tape](../single-core-with-tape/)
+or the [spatial computer](../spatial-computer/).
 
 Choose a machine model separately from an
 [instruction-set version](../../instruction-sets/). See the
